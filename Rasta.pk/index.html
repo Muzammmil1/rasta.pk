@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Rasta.pk - Find Masjids, Namaz Times, Schools, Restaurants, Hospitals, and Shops in your city.">
+    <title>Rasta.pk - City Finder</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="sticky-header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-map-location-dot"></i> Rasta.pk
+            </div>
+            <div class="header-actions" style="display: flex; gap: 1rem; align-items: center;">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for places..." aria-label="Search"
+                        data-i18n="search_placeholder">
+                    <button type="button" aria-label="Search Database"><i class="fas fa-search"></i></button>
+                </div>
+                <!-- Language Switcher -->
+                <select id="languageSelector" class="lang-selector" aria-label="Language Selector"
+                    style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--white); font-family: 'Outfit', sans-serif; cursor: pointer;">
+                    <option value="en">English</option>
+                    <option value="ur">اردو - Urdu</option>
+                    <option value="ar">العربية - Arabic</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 data-i18n="hero_title">Search Your Area</h1>
+                <p data-i18n="hero_desc">Discover the locations/places in Your Sorroundings, in the Cities
+                    across Pakistan.</p>
+            </div>
+        </section>
+
+        <section class="widgets-section container">
+            <div class="time-widget glass-panel">
+                <h2 data-i18n="live_namaz_clock"><i class="fas fa-clock"></i> Live Namaz Clock</h2>
+                <div class="clock-display" id="clock-display">00:00:00</div>
+                <div class="next-namaz" id="next-namaz" data-i18n="upcoming_fajr">Upcoming: Asr in <span
+                        id="time-left">2h 15m</span></div>
+            </div>
+
+            <div class="tabs-and-filters">
+                <div class="province-tabs" style="width: 100%;">
+                    <button class="province-tab active" data-province="all" data-i18n="prov_all">All Pakistan</button>
+                    <button class="province-tab" data-province="punjab" data-i18n="prov_punjab">Punjab</button>
+                    <button class="province-tab" data-province="sindh" data-i18n="prov_sindh">Sindh</button>
+                    <button class="province-tab" data-province="kpk" data-i18n="prov_kpk">Khyber Pakhtunkhwa</button>
+                    <button class="province-tab" data-province="balochistan"
+                        data-i18n="prov_baloch">Balochistan</button>
+                    <button class="province-tab" data-province="gb" data-i18n="prov_gb">Gilgit-Baltistan</button>
+                    <button class="province-tab" data-province="ajk" data-i18n="prov_ajk">AJK</button>
+                </div>
+                <div class="hero-search glass-panel" style="width: 100%;">
+                    <input type="text" id="citySelect" list="cityList" placeholder="Select or type City"
+                        aria-label="Select City" data-i18n="select_city">
+                    <datalist id="cityList">
+                        <!-- Options injected by JS -->
+                    </datalist>
+                    <div style="display: flex; flex: 1; position: relative;">
+                        <input type="text" id="areaInput" placeholder="Enter neighborhood or area..."
+                            aria-label="Area Search" style="width: 100%; padding-right: 40px;" data-i18n="enter_area">
+                        <button type="button" class="btn-location" id="getLocationBtn" aria-label="Use Current Location"
+                            title="Use current location">
+                            <i class="fas fa-location-crosshairs"></i>
+                        </button>
+                    </div>
+                    <button class="btn-primary" id="searchBtn" data-i18n="find_places">Find Places</button>
+                </div>
+                <div class="filter-categories">
+                    <button class="filter-btn active" data-filter="all" data-i18n="cat_all">All</button>
+                    <button class="filter-btn" data-filter="masjid" data-i18n="cat_masjid">Masjids</button>
+                    <button class="filter-btn" data-filter="namaz" data-i18n="cat_namaz">Namaz</button>
+                    <button class="filter-btn" data-filter="food" data-i18n="cat_food">Food</button>
+                    <button class="filter-btn" data-filter="health" data-i18n="cat_health">Health</button>
+                    <button class="filter-btn" data-filter="education" data-i18n="cat_edu">Education</button>
+                    <button class="filter-btn" data-filter="shopping" data-i18n="cat_shop">Shopping</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="container">
+            <h2 class="section-title" data-i18n="dir_cat_title">Directory Categories</h2>
+            <div class="feature-grid" id="featureGrid">
+
+                <div class="card" data-category="masjid">
+                    <div class="card-icon"><i class="fas fa-mosque"></i></div>
+                    <h3 data-i18n="cat_masjid">Masjids</h3>
+                    <p data-i18n="desc_masjid">Find nearby Masjids for daily prayers</p>
+                </div>
+
+                <div class="card" data-category="namaz">
+                    <div class="card-icon"><i class="fas fa-pray"></i></div>
+                    <h3 data-i18n="cat_namaz_times">Namaz Times</h3>
+                    <p data-i18n="desc_namaz">Accurate prayer times</p>
+                    <div class="quick-view">
+                        <h4 data-i18n="today_times">Today's Times</h4>
+                        <p>Fajr: 05:30 AM</p>
+                        <p>Zuhr: 01:30 PM</p>
+                        <p>Asr: 05:00 PM</p>
+                        <p>Maghrib: 07:15 PM</p>
+                        <p>Isha: 08:45 PM</p>
+                    </div>
+                </div>
+
+                <div class="card" data-category="food">
+                    <div class="card-icon"><i class="fas fa-utensils"></i></div>
+                    <h3 data-i18n="cat_food_title">Restaurants</h3>
+                    <p data-i18n="desc_food">Local food, Dining & Delivery</p>
+                </div>
+
+                <div class="card" data-category="health">
+                    <div class="card-icon"><i class="fas fa-hospital"></i></div>
+                    <h3 data-i18n="cat_health_title">Hospitals</h3>
+                    <p data-i18n="desc_health">Clinics, Pharmacies & Emergencies</p>
+                </div>
+
+                <div class="card" data-category="education">
+                    <div class="card-icon"><i class="fas fa-school"></i></div>
+                    <h3 data-i18n="cat_edu_title">Schools</h3>
+                    <p data-i18n="desc_edu">Educational Institutes & Tuition Centers</p>
+                </div>
+
+                <div class="card" data-category="shopping">
+                    <div class="card-icon"><i class="fas fa-shopping-bag"></i></div>
+                    <h3 data-i18n="cat_shop_title">Shops</h3>
+                    <p data-i18n="desc_shop">Malls, Boutiques & Local Markets</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- New Search Results Section -->
+        <section class="container" id="searchResultsSection" style="display: none; margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title" style="margin-bottom: 0;" data-i18n="search_results">Search Results</h2>
+                <button class="btn-outline" id="closeResultsBtn" style="padding: 0.5rem 1rem;" data-i18n="btn_close"><i
+                        class="fas fa-times"></i> Close</button>
+            </div>
+
+            <div id="resultsList" class="results-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Result items will be injected here via JS -->
+            </div>
+        </section>
+
+        <section class="top-rated container">
+            <h2 class="section-title" data-i18n="top_rated">Top Rated Locations</h2>
+            <div class="horizontal-scroll">
+                <div class="scroll-item">
+                    <div class="item-img"
+                        style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=400');">
+                    </div>
+                    <div class="item-info">
+                        <h4>Karachi Biryani</h4>
+                        <span><i class="fas fa-star text-warning"></i> 4.8</span>
+                    </div>
+                </div>
+                <div class="scroll-item">
+                    <div class="item-img"
+                        style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=400');">
+                    </div>
+                    <div class="item-info">
+                        <h4>Gul Ahmed Outlet</h4>
+                        <span><i class="fas fa-star text-warning"></i> 4.5</span>
+                    </div>
+                </div>
+                <div class="scroll-item">
+                    <div class="item-img"
+                        style="background-image: url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=400');">
+                    </div>
+                    <div class="item-info">
+                        <h4>City Hospital</h4>
+                        <span><i class="fas fa-star text-warning"></i> 4.9</span>
+                    </div>
+                </div>
+                <div class="scroll-item">
+                    <div class="item-img"
+                        style="background-image: url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=400');">
+                    </div>
+                    <div class="item-info">
+                        <h4>Lahore Karahi</h4>
+                        <span><i class="fas fa-star text-warning"></i> 4.7</span>
+                    </div>
+                </div>
+                <div class="scroll-item">
+                    <div class="item-img"
+                        style="background-image: url('https://images.unsplash.com/photo-1580970638531-97bfa00c9261?auto=format&fit=crop&q=80&w=400');">
+                    </div>
+                    <div class="item-info">
+                        <h4>City School System</h4>
+                        <span><i class="fas fa-star text-warning"></i> 4.6</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="landmarks container">
+            <h2 class="section-title" data-i18n="nearby_landmarks">Nearby Landmarks</h2>
+            <ul class="landmark-list">
+                <li>
+                    <i class="fas fa-map-marker-alt text-primary"></i>
+                    <div class="landmark-details">
+                        <strong>Faisal Mosque</strong>
+                        <span data-i18n="2_5_km">2.5 km away</span>
+                    </div>
+                    <button class="btn-outline" data-i18n="directions">Directions</button>
+                </li>
+                <li>
+                    <i class="fas fa-map-marker-alt text-primary"></i>
+                    <div class="landmark-details">
+                        <strong>Centaurus Mall</strong>
+                        <span data-i18n="5_0_km">5.0 km away</span>
+                    </div>
+                    <button class="btn-outline" data-i18n="directions">Directions</button>
+                </li>
+                <li>
+                    <i class="fas fa-map-marker-alt text-primary"></i>
+                    <div class="landmark-details">
+                        <strong>Shifa International</strong>
+                        <span data-i18n="3_2_km">3.2 km away</span>
+                    </div>
+                    <button class="btn-outline" data-i18n="directions">Directions</button>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p data-i18n="footer_copy">&copy; 2026 Rasta.pk - Connecting Pakistani Cities</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
